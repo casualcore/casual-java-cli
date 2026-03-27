@@ -1,0 +1,19 @@
+//-*- coding: utf-8 -*-
+plugins {
+  id 'ear'
+}
+
+dependencies {
+  deploy project( path: ':casual-java-cli', configuration:'archives')
+}
+
+ear{
+  deploymentDescriptor{
+    applicationName = "casual-java-cli-app"
+    displayName = "Casual Java CLI App"
+    description = "Application that provides rest endpoints foor Casual Java CLI"
+  }
+  manifest{
+        attributes 'Dependencies' : 'jdk.unsupported'
+  }
+}

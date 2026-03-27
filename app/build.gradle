@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2017 - 2020, The casual project. All rights reserved.
+ *
+ * This software is licensed under the MIT license, https://opensource.org/licenses/MIT
+ */
+
+//-*- coding: utf-8 -*-
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/plugins-release' }
+    }
+}
+
+plugins {
+  id "org.sonarqube" version "5.1.0.4882"
+}
+
+sonarqube {
+    properties {
+        properties["sonar.host.url"] = 'http://localhost:9000'
+        properties["sonar.verbose"] = "true"
+        properties['sonar.java.source'] = 17
+    }
+}
+
+subprojects{
+
+  repositories {
+    maven {
+      name = 'Central Portal Snapshots'
+      url = 'https://central.sonatype.com/repository/maven-snapshots/'
+
+      // Only search this repository for the specific dependency group
+      content {
+        includeGroup("se.laz.casual")
+      }
+    }
+    mavenLocal()
+    mavenCentral()
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:all" << "-Werror"
+  }
+
+  project.afterEvaluate { project ->
+    if (project.plugins.hasPlugin(JacocoPlugin)) {
+      test {
+        useJUnitPlatform()
+        jvmArgs "-javaagent:${configurations.testRuntimeClasspath.find { it.name.contains('mockito-core') }}", '-Xshare:off'
+        finalizedBy jacocoTestReport
+        testLogging {
+          events "passed", "skipped", "failed"
+        }
+      }
+
+      jacocoTestReport {
+        reports {
+          xml.required = true
+          csv.required = false
+        }
+      }
+    }
+
+    if (project.plugins.hasPlugin(WarPlugin)) {
+      jar {
+        enabled = false
+      }
+    }
+  }
+}

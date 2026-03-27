@@ -1,0 +1,9 @@
+[requires]
+gtest/1.16.0
+cppcodec/0.2
+libcurl/8.19.0
+[generators]
+CMakeDeps
+CMakeToolchain
+[layout]
+cmake_layout

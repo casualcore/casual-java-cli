@@ -1,3 +1,17 @@
+# intellij
+.idea
+
+# vs code
+.vscode/
+*.code-workspace
+
+# cmake/conan/cpp
+cmake-build-debug
+CMakeUserPresets.json
+conan_provider.cmake
+casual-thirdparty
+_deps
+
 # Prerequisites
 *.d
 
@@ -16,6 +30,9 @@
 
 # Debugger Files
 *.pdb
+
+# Build files
+build
 
 # Compiled Dynamic libraries
 *.so
@@ -39,3 +56,6 @@
 
 # debug information files
 *.dwo
+
+# java
+.gradle
