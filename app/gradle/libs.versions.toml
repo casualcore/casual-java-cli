@@ -1,6 +1,6 @@
 [versions]
-casual-jca = "3.3.9"
-casual-caller = "3.3.2"
+casual-jca = "3.5.0-SNAPSHOT"
+casual-caller = "3.4.0-SNAPSHOT"
 gson = "2.14.0"
 jersey = "3.1.9"
 junit = "6.0.3"
@@ -10,6 +10,7 @@ sonarqube = "5.1.0.4882"
 
 [libraries]
 casual-api = { module = "se.laz.casual:casual-api", version.ref = "casual-jca" }
+casual-event-client = { module = "se.laz.casual:casual-event-client", version.ref = "casual-jca" }
 casual-caller-api = { module = "se.laz.casual:casual-caller-api", version.ref = "casual-caller" }
 jakarta-api = { module = "jakarta.platform:jakarta.jakartaee-api", version = "11.0.0" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

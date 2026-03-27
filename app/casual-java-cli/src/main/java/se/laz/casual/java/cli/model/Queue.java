@@ -11,7 +11,7 @@ import java.util.Objects;
 public record Queue(String name, Connection connection) {
     public Queue
     {
-        Objects.requireNonNull(name, "name can not be null");
-        Objects.requireNonNull(connection, "connection can not be null");
+        Objects.requireNonNull( name, "name can not be null" );
+        Objects.requireNonNull( connection, "connection can not be null" );
     }
 }

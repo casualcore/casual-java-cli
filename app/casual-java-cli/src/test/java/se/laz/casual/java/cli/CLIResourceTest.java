@@ -32,7 +32,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +67,8 @@ class CLIResourceTest
         resource.setUp();
         serviceConnection = new Connection("someconnetion", true);
         queueConnection = new Connection("jndi:someconnection", true);
-        service = new Service("servicename/test", "category1", TransactionType.JOIN, 1, 2, serviceConnection);
+        service = new Service.Builder().name("servicename/test").category("category1")
+                .transactionType(TransactionType.JOIN.name()).hops(1).timeout(2).connection(serviceConnection).build();
     }
 
     @AfterEach
@@ -160,7 +160,7 @@ class CLIResourceTest
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(resource.target().getUri().toString() + "discover/service"))
                 .header("content-type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(String.format("['%s']", service.name()))).build();
+                .POST(HttpRequest.BodyPublishers.ofString(String.format("['%s']", service.getName()))).build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         Type listType = new TypeToken<ArrayList<Service>>(){}.getType();

@@ -5,16 +5,19 @@ plugins {
 }
 
 dependencies {
-  compileOnly libs.casual.api
-  compileOnly libs.casual.caller.api
-  compileOnly libs.jakarta.api
+    compileOnly libs.casual.api
+    compileOnly libs.casual.caller.api
+    compileOnly libs.jakarta.api
+    implementation libs.casual.event.client
 
-  testImplementation libs.casual.api
-  testImplementation libs.gson
-  testImplementation(libs.bundles.jersey)
-  testImplementation(platform(libs.junit.bom))
-  testImplementation(libs.bundles.junit.jupiter)
-  testRuntimeOnly(libs.bundles.junit.runtime)
+    testImplementation libs.casual.api
+    testImplementation libs.casual.caller.api
+    testImplementation libs.gson
+    testImplementation libs.jakarta.api
+    testImplementation(libs.bundles.jersey)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit.jupiter)
+    testRuntimeOnly(libs.bundles.junit.runtime)
 }
 
 war {
