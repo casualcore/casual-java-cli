@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Path("/")
+@Path( "/" )
 public class CLIResource
 {
     @Inject
@@ -30,80 +30,69 @@ public class CLIResource
      * Get all configuration for Casual JCA and Casual caller
      * @return Configuration
      */
-    @Path("/configuration")
+    @Path( "/configuration" )
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces( MediaType.APPLICATION_JSON )
     public Response getConfiguration()
     {
-        return Response.ok(cliService.getConfiguration()).build();
-    }
-
-    /***
-     * List all known connections for services and queues.
-     * @return List of connections
-     */
-    @Path("/connections")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getConnections()
-    {
-        return Response.ok(cliService.getConnections()).build();
+        return Response.ok( cliService.getConfiguration() ).build();
     }
 
     /***
      * Get service names of cached services
      * @return List of service names
      */
-    @Path("/services")
+    @Path( "/services" )
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces( MediaType.APPLICATION_JSON )
     public Response getServices()
     {
-        return Response.ok(cliService.getServices()).build();
+        return Response.ok( cliService.getServices() ).build();
     }
 
     /***
      * Get queue names of cached queues
      * @return List of queue names
      */
-    @Path("/queues")
+    @Path( "/queues" )
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces( MediaType.APPLICATION_JSON )
     public Response getQueues()
     {
-        return Response.ok(cliService.discoverQueues()).build();
+        return Response.ok( cliService.discoverQueues() ).build();
     }
 
     /***
      * Do discovery on specified service names
      * @return Service information for services
      */
-    @Path("/discover/service")
+    @Path( "/discover/service" )
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getService(List<String> services)
+    @Produces( MediaType.APPLICATION_JSON )
+    public Response getService( List<String> services )
     {
         List<Service> serviceDiscoveryList = new ArrayList<>();
-        services.forEach(s -> serviceDiscoveryList.addAll(cliService.discoverService(s)));
-        return Response.ok(serviceDiscoveryList).build();
+        services.forEach( s -> serviceDiscoveryList.addAll( cliService.discoverService( s ) ) );
+        return Response.ok( serviceDiscoveryList ).build();
     }
 
     /***
      * Do discovery on specified queue names
      * @return Queue information for queues
      */
-    @Path("/discover/queue")
+    @Path( "/discover/queue" )
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getQueues(List<String> queues)
+    @Produces( MediaType.APPLICATION_JSON )
+    public Response getQueues( List<String> queues )
     {
         List<Queue> queueDiscoveryList = new ArrayList<>();
-        queues.forEach(s -> {
-            Queue queue = cliService.getQueue(s);
-            if (Objects.nonNull(queue)) {
-                queueDiscoveryList.add(queue);
+        queues.forEach( s -> {
+            Queue queue = cliService.getQueue( s );
+            if( Objects.nonNull( queue ) )
+            {
+                queueDiscoveryList.add( queue );
             }
-        });
-        return Response.ok(queueDiscoveryList).build();
+        } );
+        return Response.ok( queueDiscoveryList ).build();
     }
 }

@@ -1,6 +1,6 @@
 [versions]
-casual-jca = "3.3.9"
-casual-caller = "3.3.2"
+casual-jca = "3.5.0-SNAPSHOT"
+casual-caller = "3.4.0-SNAPSHOT"
 gson = "2.14.0"
 jersey = "3.1.9"
 junit = "6.0.3"

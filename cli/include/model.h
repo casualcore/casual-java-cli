@@ -32,47 +32,69 @@ namespace casual::java::model {
             )
         };
 
-        struct Connection
+        struct Queue
         {
+            std::string name;
             std::string jndiName;
             bool valid;
 
             CASUAL_CONST_CORRECT_SERIALIZE
             (
+               CASUAL_SERIALIZE( name);
                CASUAL_SERIALIZE( jndiName);
                CASUAL_SERIALIZE( valid);
             )
         };
 
-        struct Queue
+        struct Statistics
         {
-            std::string name;
-            Connection connection;
+            long count;
+            long min;
+            long max;
+            long last;
+            long total;
 
             CASUAL_CONST_CORRECT_SERIALIZE
             (
-               CASUAL_SERIALIZE( name);
-               CASUAL_SERIALIZE( connection);
+                CASUAL_SERIALIZE( count);
+                CASUAL_SERIALIZE( min);
+                CASUAL_SERIALIZE( max);
+                CASUAL_SERIALIZE( last);
+                CASUAL_SERIALIZE( total);
             )
         };
 
         struct Service
         {
             std::string name;
+            char order;
             std::string category;
             std::string transactionType;
             long timeout;
             long hops;
-            Connection connection;
+            bool valid;
+            std::string jndiName;
+            std::string domainId;
+            std::string protocolVersion;
+            std::string hostName;
+            int portNumber;
+            Statistics statistics;
 
             CASUAL_CONST_CORRECT_SERIALIZE
             (
                CASUAL_SERIALIZE( name);
+               CASUAL_SERIALIZE( order);
                CASUAL_SERIALIZE( category);
                CASUAL_SERIALIZE( transactionType);
                CASUAL_SERIALIZE( timeout);
                CASUAL_SERIALIZE( hops);
-               CASUAL_SERIALIZE( connection);
+               CASUAL_SERIALIZE( valid);
+               CASUAL_SERIALIZE( jndiName);
+               CASUAL_SERIALIZE( domainId);
+               CASUAL_SERIALIZE( protocolVersion);
+               CASUAL_SERIALIZE( hostName);
+               CASUAL_SERIALIZE( portNumber);
+               CASUAL_SERIALIZE( statistics);
             )
         };
     }
