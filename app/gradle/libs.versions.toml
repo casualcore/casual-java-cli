@@ -1,0 +1,33 @@
+[versions]
+casual-jca = "3.3.9"
+casual-caller = "3.3.2"
+gson = "2.14.0"
+jersey = "3.1.9"
+junit = "6.0.3"
+mockito = "5.23.0"
+
+sonarqube = "5.1.0.4882"
+
+[libraries]
+casual-api = { module = "se.laz.casual:casual-api", version.ref = "casual-jca" }
+casual-caller-api = { module = "se.laz.casual:casual-caller-api", version.ref = "casual-caller" }
+jakarta-api = { module = "jakarta.platform:jakarta.jakartaee-api", version = "11.0.0" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+mockito = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+jersey-client = { module = "org.glassfish.jersey.core:jersey-client", version.ref = "jersey" }
+jersey-test = { module = "org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-jdk-http", version.ref = "jersey" }
+jersey-inject = { module = "org.glassfish.jersey.inject:jersey-hk2", version.ref = "jersey" }
+jersey-gson = { module = "org.glassfish.jersey.media:jersey-media-json-gson", version.ref = "jersey" }
+
+[bundles]
+junit-runtime = [ "junit-platform-launcher", "junit-jupiter-engine" ]
+junit-jupiter = [ "junit-jupiter", "junit-jupiter-api", "mockito" ]
+jersey = ["jersey-client", "jersey-test", "jersey-inject", "jersey-gson"]
+
+[plugins]
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
