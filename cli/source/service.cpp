@@ -16,6 +16,16 @@ namespace casual::java::service
 {
     namespace local
     {
+        bool isInboundService(const model::api::Service& service)
+        {
+            return !service.jndiName.empty();
+        }
+
+        auto format_timeout = []( const model::api::Service& value) -> std::string
+        {
+            return value.timeout > 0 ? std::to_string(value.timeout) : "-";
+        };
+
         void check_error(cli::http::Reply &reply)
         {
             if (!reply.curlError.empty())
@@ -69,10 +79,7 @@ namespace casual::java::service
                      common::terminal::format::column( "name", []( auto& service) { return service.name;}, common::terminal::color::yellow, common::terminal::format::Align::left),
                      common::terminal::format::column( "category", []( auto& service) { return service.category;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "mode", []( auto& service) { return service.transactionType;}, common::terminal::color::white, common::terminal::format::Align::right),
-                     // common::terminal::format::column( "hops", []( auto& service) { return service.hops;}, common::terminal::color::white, common::terminal::format::Align::right),
-                     common::terminal::format::column( "timeout", []( auto& service) { return service.timeout;}, common::terminal::color::white, common::terminal::format::Align::right),
-                     // common::terminal::format::column( "alias", []( auto& service) { return service.connection.jndiName;}, common::terminal::color::white, common::terminal::format::Align::right),
-                     // common::terminal::format::custom::column( "valid", format_valid_connection{}),
+                     common::terminal::format::column( "timeout", format_timeout, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "order", []( auto& service) { return service.statistics.order;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "C", []( auto& service) { return service.statistics.count;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "AT", format_avg_time, common::terminal::color::white, common::terminal::format::Align::right),
@@ -107,28 +114,30 @@ namespace casual::java::service
 
         namespace info::services
         {
-            struct format_valid_connection
+            auto format_alias = []( const model::api::Service& value) -> std::string
             {
-                static std::size_t width( const model::api::Connection& value, const std::ostream&)
+                return !value.jndiName.empty() ? value.jndiName : value.domainId;
+            };
+
+            struct format_valid
+            {
+                static std::size_t width( const model::api::Service& value, const std::ostream&)
                 {
                     return 5;
                 }
 
-                static std::size_t width( const model::api::Service& value, const std::ostream& ostream)
-                {
-                    return width(value.connection, ostream);
-                }
-
-                void static print( std::ostream& out, const model::api::Connection& value, std::size_t width)
-                {
-                    out << std::setfill( ' ') << std::left << std::setw( width);
-                    auto c = value.valid ? common::terminal::color::green : common::terminal::color::red;
-                    common::stream::write( out, c, value.valid);
-                }
-
                 void static print( std::ostream& out, const model::api::Service& value, std::size_t width)
                 {
-                    print(out, value.connection, width);
+                    out << std::setfill( ' ') << std::left << std::setw( width);
+                    if (isInboundService(value))
+                    {
+                        auto c = value.valid ? common::terminal::color::green : common::terminal::color::red;
+                        common::stream::write( out, c, value.valid);
+                    }
+                    else
+                    {
+                        common::stream::write( out, common::terminal::color::white, "-");
+                    }
                 }
             };
 
@@ -139,9 +148,9 @@ namespace casual::java::service
                      common::terminal::format::column( "category", []( auto& service) { return service.category;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "mode", []( auto& service) { return service.transactionType;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "hops", []( auto& service) { return service.hops;}, common::terminal::color::white, common::terminal::format::Align::right),
-                     common::terminal::format::column( "timeout", []( auto& service) { return service.timeout;}, common::terminal::color::white, common::terminal::format::Align::right),
-                     common::terminal::format::column( "alias", []( auto& service) { return service.connection.jndiName;}, common::terminal::color::white, common::terminal::format::Align::right),
-                     common::terminal::format::custom::column( "valid", format_valid_connection{}));
+                     common::terminal::format::column( "timeout", format_timeout, common::terminal::color::white, common::terminal::format::Align::right),
+                     common::terminal::format::column( "alias", format_alias, common::terminal::color::white, common::terminal::format::Align::right),
+                     common::terminal::format::custom::column( "valid", format_valid{}));
             };
 
             auto invoke()

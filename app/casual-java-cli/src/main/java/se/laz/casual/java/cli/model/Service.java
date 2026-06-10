@@ -8,19 +8,47 @@ package se.laz.casual.java.cli.model;
 
 import java.util.Objects;
 
-public class Service {
-
+public class Service
+{
     String name;
     String category;
     String transactionType;
     long timeout;
     long hops;
-    Connection connection;
+    boolean valid;
+    // Only for inbound
+    String jndiName;
+    // Only for outbound
+    String domainId;
+    String protocolVersion;
+    String hostName;
+    Integer portNumber;
     ServiceStatistics statistics;
 
     public Service()
     {
         // no-op
+    }
+
+    public Service( Builder builder )
+    {
+        this.name = builder.name;
+        this.category = builder.category;
+        this.transactionType = builder.transactionType;
+        this.timeout = builder.timeout;
+        this.hops = builder.hops;
+        this.valid = builder.valid;
+        this.jndiName = builder.jndiName;
+        this.domainId = builder.domainId;
+        this.protocolVersion = builder.protocolVersion;
+        this.hostName = builder.hostName;
+        this.portNumber = builder.portNumber;
+        this.statistics = builder.statistics;
+
+        Objects.requireNonNull( name, "name can not be null" );
+        Objects.requireNonNull( category, "category can not be null" );
+        Objects.requireNonNull( transactionType, "transactionType can not be null" );
+        Objects.requireNonNull( statistics, "statistics can not be null" );
     }
 
     public String getName()
@@ -48,9 +76,34 @@ public class Service {
         return hops;
     }
 
-    public Connection getConnection()
+    public boolean isValid()
     {
-        return connection;
+        return valid;
+    }
+
+    public String getJndiName()
+    {
+        return jndiName;
+    }
+
+    public String getDomainId()
+    {
+        return domainId;
+    }
+
+    public String getProtocolVersion()
+    {
+        return protocolVersion;
+    }
+
+    public String getHostName()
+    {
+        return hostName;
+    }
+
+    public Integer getPortNumber()
+    {
+        return portNumber;
     }
 
     public ServiceStatistics getStatistics()
@@ -58,28 +111,9 @@ public class Service {
         return statistics;
     }
 
-    public void setStatistics(ServiceStatistics statistics)
+    public void setStatistics( ServiceStatistics statistics )
     {
         this.statistics = statistics;
-    }
-
-    public Service(Builder builder)
-    {
-        this.name = builder.name;
-        this.category = builder.category;
-        this.transactionType = builder.transactionType;
-        this.timeout = builder.timeout;
-        this.hops = builder.hops;
-        this.connection = builder.connection;
-        this.statistics = builder.statistics;
-
-        Objects.requireNonNull(name, "name can not be null");
-        Objects.requireNonNull(category, "category can not be null");
-        Objects.requireNonNull(transactionType, "transactionType can not be null");
-        Objects.requireNonNull(timeout, "timeout can not be null");
-        Objects.requireNonNull(hops, "hops can not be null");
-        Objects.requireNonNull(connection, "connection can not be null");
-        Objects.requireNonNull(statistics, "statistics can not be null");
     }
 
     @Override
@@ -90,27 +124,22 @@ public class Service {
             return false;
         }
         Service service = (Service) o;
-        return timeout == service.timeout && hops == service.hops && Objects.equals( name, service.name ) && Objects.equals( category, service.category ) && Objects.equals( transactionType, service.transactionType ) && Objects.equals( connection, service.connection ) && Objects.equals( statistics, service.statistics );
+        return timeout == service.timeout && hops == service.hops && valid == service.valid && Objects.equals( name,
+                service.name ) && Objects.equals( category, service.category ) && Objects.equals( transactionType,
+                service.transactionType ) && Objects.equals( statistics, service.statistics ) && Objects.equals( jndiName, service.jndiName ) && Objects.equals( domainId, service.domainId ) && Objects.equals( protocolVersion, service.protocolVersion ) && Objects.equals( hostName, service.hostName ) && Objects.equals( portNumber, service.portNumber );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( name, category, transactionType, timeout, hops, connection, statistics );
+        return Objects.hash( name, category, transactionType, timeout, hops, valid, statistics, jndiName, domainId,
+                protocolVersion, hostName, portNumber );
     }
 
     @Override
     public String toString()
     {
-        return "Service{" +
-                "name='" + name + '\'' +
-                ", category='" + category + '\'' +
-                ", transactionType=" + transactionType +
-                ", timeout=" + timeout +
-                ", hops=" + hops +
-                ", connection=" + connection +
-                ", statistics=" + statistics +
-                '}';
+        return "Service{" + "name='" + name + '\'' + ", category='" + category + '\'' + ", transactionType='" + transactionType + '\'' + ", timeout=" + timeout + ", hops=" + hops + ", valid=" + valid + ", statistics=" + statistics + ", jndiName=" + jndiName + ", domainId=" + domainId + ", protocolVersion=" + protocolVersion + ", hostName=" + hostName + ", portNumber=" + portNumber + '}';
     }
 
     public static class Builder
@@ -120,46 +149,81 @@ public class Service {
         String transactionType = "-";
         long timeout = 0;
         long hops;
-        Connection connection;
-        ServiceStatistics statistics = new ServiceStatistics('-', 0, 0, 0, 0, 0);
+        boolean valid = false;
+        String jndiName;
+        String domainId;
+        String protocolVersion;
+        String hostName;
+        Integer portNumber;
+        ServiceStatistics statistics = new ServiceStatistics( '-', 0, 0, 0, 0, 0 );
 
-        public Service.Builder name(String name)
+        public Builder name( String name )
         {
             this.name = name;
             return this;
         }
 
-        public Service.Builder category(String category)
+        public Builder category( String category )
         {
             this.category = category;
             return this;
         }
 
-        public Service.Builder transactionType(String transactionType)
+        public Builder transactionType( String transactionType )
         {
             this.transactionType = transactionType;
             return this;
         }
 
-        public Service.Builder timeout(long timeout)
+        public Builder timeout( long timeout )
         {
             this.timeout = timeout;
             return this;
         }
 
-        public Service.Builder hops(long hops)
+        public Builder hops( long hops )
         {
             this.hops = hops;
             return this;
         }
 
-        public Service.Builder connection(Connection connection)
+        public Builder valid( boolean valid )
         {
-            this.connection = connection;
+            this.valid = valid;
             return this;
         }
 
-        public Service.Builder serviceStatistics(ServiceStatistics serviceStatistics)
+        public Builder jndiName( String jndiName )
+        {
+            this.jndiName = jndiName;
+            return this;
+        }
+
+        public Builder domainId( String domainId )
+        {
+            this.domainId = domainId;
+            return this;
+        }
+
+        public Builder protocolVersion( String protocolVersion )
+        {
+            this.protocolVersion = protocolVersion;
+            return this;
+        }
+
+        public Builder hostName( String hostName )
+        {
+            this.hostName = hostName;
+            return this;
+        }
+
+        public Builder portNumber( Integer portNumber )
+        {
+            this.portNumber = portNumber;
+            return this;
+        }
+
+        public Builder serviceStatistics( ServiceStatistics serviceStatistics )
         {
             this.statistics = serviceStatistics;
             return this;
@@ -167,7 +231,7 @@ public class Service {
 
         public Service build()
         {
-            return new Service(this);
+            return new Service( this );
         }
     }
 }

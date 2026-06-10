@@ -32,27 +32,17 @@ namespace casual::java::model {
             )
         };
 
-        struct Connection
+        struct Queue
         {
+            std::string name;
             std::string jndiName;
             bool valid;
 
             CASUAL_CONST_CORRECT_SERIALIZE
             (
+               CASUAL_SERIALIZE( name);
                CASUAL_SERIALIZE( jndiName);
                CASUAL_SERIALIZE( valid);
-            )
-        };
-
-        struct Queue
-        {
-            std::string name;
-            Connection connection;
-
-            CASUAL_CONST_CORRECT_SERIALIZE
-            (
-               CASUAL_SERIALIZE( name);
-               CASUAL_SERIALIZE( connection);
             )
         };
 
@@ -83,7 +73,12 @@ namespace casual::java::model {
             std::string transactionType;
             long timeout;
             long hops;
-            Connection connection;
+            bool valid;
+            std::string jndiName;
+            std::string domainId;
+            std::string protocolVersion;
+            std::string hostName;
+            int portNumber;
             Statistics statistics;
 
             CASUAL_CONST_CORRECT_SERIALIZE
@@ -93,7 +88,12 @@ namespace casual::java::model {
                CASUAL_SERIALIZE( transactionType);
                CASUAL_SERIALIZE( timeout);
                CASUAL_SERIALIZE( hops);
-               CASUAL_SERIALIZE( connection);
+               CASUAL_SERIALIZE( valid);
+               CASUAL_SERIALIZE( jndiName);
+               CASUAL_SERIALIZE( domainId);
+               CASUAL_SERIALIZE( protocolVersion);
+               CASUAL_SERIALIZE( hostName);
+               CASUAL_SERIALIZE( portNumber);
                CASUAL_SERIALIZE( statistics);
             )
         };

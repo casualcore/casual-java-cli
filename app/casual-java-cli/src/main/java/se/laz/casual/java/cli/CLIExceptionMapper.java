@@ -11,9 +11,11 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 
 import java.net.HttpURLConnection;
 
-public class CLIExceptionMapper implements ExceptionMapper<Exception> {
+public class CLIExceptionMapper implements ExceptionMapper<Exception>
+{
     @Override
-    public Response toResponse(Exception e) {
-        return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+    public Response toResponse( Exception e )
+    {
+        return Response.status( HttpURLConnection.HTTP_INTERNAL_ERROR ).entity( e ).build();
     }
 }

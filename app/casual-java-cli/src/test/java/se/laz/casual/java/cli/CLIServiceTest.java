@@ -26,15 +26,13 @@ import se.laz.casual.network.messages.domain.TransactionType;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.mockStatic;
 import static se.laz.casual.java.cli.CLIService.TEST_CONFIGURATION;
-import static se.laz.casual.java.cli.CLIService.TEST_QUEUE_CONNECTION_1;
 import static se.laz.casual.java.cli.CLIService.TEST_Q_1;
 import static se.laz.casual.java.cli.CLIService.TEST_Q_2;
-import static se.laz.casual.java.cli.CLIService.TEST_SERVICE_CONNECTION_1;
-import static se.laz.casual.java.cli.CLIService.TEST_SERVICE_CONNECTION_2;
 
 class CLIServiceTest
 {
@@ -47,35 +45,27 @@ class CLIServiceTest
     @BeforeEach
     void setUp()
     {
-        MockitoAnnotations.openMocks(this);
+        MockitoAnnotations.openMocks( this );
     }
 
-    @DisplayName("Test get configuration")
+    @DisplayName( "Test get configuration" )
     @Test
     void testGetConfiguration()
     {
         Configuration configuration = cliService.getConfiguration();
-        Assertions.assertNotNull(configuration);
-        Assertions.assertEquals(TEST_CONFIGURATION, configuration);
+        Assertions.assertNotNull( configuration );
+        Assertions.assertEquals( TEST_CONFIGURATION, configuration );
     }
 
-    @DisplayName("Test get connections")
-    @Test
-    void testGetConnections()
-    {
-        Assertions.assertEquals(List.of(TEST_SERVICE_CONNECTION_1, TEST_SERVICE_CONNECTION_2, TEST_QUEUE_CONNECTION_1),
-                cliService.getConnections());
-    }
-
-    @DisplayName("Test discover service")
+    @DisplayName( "Test discover service" )
     @Test
     void testDiscoverService()
     {
         Mockito.doNothing().when( casualCallerInfo ).discoverService( "someService" );
-        Assertions.assertEquals( Collections.emptyList(), cliService.discoverService("someService"));
+        Assertions.assertEquals( Collections.emptyList(), cliService.discoverService( "someService" ) );
     }
 
-    @DisplayName("Test get services")
+    @DisplayName( "Test get services" )
     @Test
     void testGetServices()
     {
@@ -86,49 +76,44 @@ class CLIServiceTest
                 .transactionType( TransactionType.ATOMIC )
                 .timeout( 1000 )
                 .build();
-        se.laz.casual.connection.caller.info.Service casualCallerService = new se.laz.casual.connection.caller.info.Service.Builder()
-                .name( "someServiceJCA" )
-                .hops( 0 )
-                .jndiName( "someJNDIName" )
-                .valid( true ).build();
-        Service jcaService = Util.toService(casualJCAService);
-        Service callerService = Util.toService(casualCallerService);
+        Service jcaService = Util.toService( casualJCAService, Optional.empty() );
 
         // Mock Casual JCA/caller services
-        Mockito.when( casualCallerInfo.getServices() ).thenReturn( List.of(casualCallerService ) );
-        try ( MockedStatic<CasualInfo> ci = mockStatic( CasualInfo.class))
+        try( MockedStatic<CasualInfo> ci = mockStatic( CasualInfo.class ) )
         {
-            ci.when( CasualInfo::getServices ).thenReturn( List.of(casualJCAService ) );
-            Assertions.assertEquals(List.of(jcaService, callerService), cliService.getServices());
+            ci.when( CasualInfo::getInboundServices ).thenReturn( List.of( casualJCAService ) );
+            ci.when( CasualInfo::getOutboundServices ).thenReturn( Collections.emptyList() );
+            Assertions.assertEquals( List.of( jcaService ), cliService.getServices() );
         }
     }
 
-    @DisplayName("Test get queues")
+    @DisplayName( "Test get queues" )
     @Test
     void testGetQueues()
     {
-        Assertions.assertEquals(List.of(TEST_Q_1, TEST_Q_2), cliService.discoverQueues());
+        Assertions.assertEquals( List.of( TEST_Q_1, TEST_Q_2 ), cliService.discoverQueues() );
     }
 
-    private static Stream<Arguments> queues() {
+    private static Stream<Arguments> queues()
+    {
         return Stream.of(
-                Arguments.of(TEST_Q_1.name(), TEST_Q_1),
-                Arguments.of(TEST_Q_2.name(), TEST_Q_2)
+                Arguments.of( TEST_Q_1.name(), TEST_Q_1 ),
+                Arguments.of( TEST_Q_2.name(), TEST_Q_2 )
         );
     }
 
-    @DisplayName("Test get queue")
+    @DisplayName( "Test get queue" )
     @ParameterizedTest
-    @MethodSource("queues")
-    void testGetQueue(String queueName, Queue expectedQueue)
+    @MethodSource( "queues" )
+    void testGetQueue( String queueName, Queue expectedQueue )
     {
-        Assertions.assertEquals(expectedQueue, cliService.getQueue(queueName));
+        Assertions.assertEquals( expectedQueue, cliService.getQueue( queueName ) );
     }
 
-    @DisplayName("Test get queue, no match")
+    @DisplayName( "Test get queue, no match" )
     @Test
     void testGetQueueNoMatch()
     {
-        Assertions.assertNull(cliService.getQueue("NO_QUEUE"));
+        Assertions.assertNull( cliService.getQueue( "NO_QUEUE" ) );
     }
 }

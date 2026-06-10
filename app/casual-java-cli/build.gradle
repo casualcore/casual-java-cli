@@ -8,7 +8,6 @@ dependencies {
     compileOnly libs.casual.api
     compileOnly libs.casual.caller.api
     compileOnly libs.jakarta.api
-    implementation libs.casual.event.client
 
     testImplementation libs.casual.api
     testImplementation libs.casual.caller.api

@@ -10,7 +10,6 @@ sonarqube = "5.1.0.4882"
 
 [libraries]
 casual-api = { module = "se.laz.casual:casual-api", version.ref = "casual-jca" }
-casual-event-client = { module = "se.laz.casual:casual-event-client", version.ref = "casual-jca" }
 casual-caller-api = { module = "se.laz.casual:casual-caller-api", version.ref = "casual-caller" }
 jakarta-api = { module = "jakarta.platform:jakarta.jakartaee-api", version = "11.0.0" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

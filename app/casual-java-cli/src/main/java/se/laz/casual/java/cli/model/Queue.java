@@ -8,10 +8,11 @@ package se.laz.casual.java.cli.model;
 
 import java.util.Objects;
 
-public record Queue(String name, Connection connection) {
+public record Queue(String name, String jndiName, boolean valid)
+{
     public Queue
     {
         Objects.requireNonNull( name, "name can not be null" );
-        Objects.requireNonNull( connection, "connection can not be null" );
+        Objects.requireNonNull( jndiName, "jndiName can not be null" );
     }
 }
