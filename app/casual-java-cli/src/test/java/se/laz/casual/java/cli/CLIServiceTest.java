@@ -19,6 +19,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import se.laz.casual.info.CasualInfo;
+import se.laz.casual.info.CasualInfoStorage;
+import se.laz.casual.info.Order;
 import se.laz.casual.java.cli.model.Configuration;
 import se.laz.casual.java.cli.model.Queue;
 import se.laz.casual.java.cli.model.Service;
@@ -30,6 +32,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 import static se.laz.casual.java.cli.CLIService.TEST_CONFIGURATION;
 import static se.laz.casual.java.cli.CLIService.TEST_Q_1;
 import static se.laz.casual.java.cli.CLIService.TEST_Q_2;
@@ -41,6 +44,9 @@ class CLIServiceTest
 
     @Mock
     se.laz.casual.connection.caller.info.CasualInfo casualCallerInfo;
+
+    @Mock
+    CasualInfoStorage casualInfoStorage;
 
     @BeforeEach
     void setUp()
@@ -71,6 +77,7 @@ class CLIServiceTest
     {
         se.laz.casual.info.Service casualJCAService = new se.laz.casual.info.Service.Builder()
                 .name( "someService" )
+                .order( Order.SEQUENTIAL )
                 .hops( 1 )
                 .category( "someCategory" )
                 .transactionType( TransactionType.ATOMIC )
@@ -78,11 +85,12 @@ class CLIServiceTest
                 .build();
         Service jcaService = Util.toService( casualJCAService, Optional.empty() );
 
+
         // Mock Casual JCA/caller services
-        try( MockedStatic<CasualInfo> ci = mockStatic( CasualInfo.class ) )
+        try( MockedStatic<CasualInfoStorage> ci = mockStatic( CasualInfoStorage.class ) )
         {
-            ci.when( CasualInfo::getInboundServices ).thenReturn( List.of( casualJCAService ) );
-            ci.when( CasualInfo::getOutboundServices ).thenReturn( Collections.emptyList() );
+            ci.when( CasualInfoStorage::getInstance ).thenReturn( casualInfoStorage );
+            when( casualInfoStorage.getServices(  ) ).thenReturn( List.of( casualJCAService ) );
             Assertions.assertEquals( List.of( jcaService ), cliService.getServices() );
         }
     }

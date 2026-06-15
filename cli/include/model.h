@@ -48,7 +48,6 @@ namespace casual::java::model {
 
         struct Statistics
         {
-            char order;
             long count;
             long min;
             long max;
@@ -57,7 +56,6 @@ namespace casual::java::model {
 
             CASUAL_CONST_CORRECT_SERIALIZE
             (
-                CASUAL_SERIALIZE( order);
                 CASUAL_SERIALIZE( count);
                 CASUAL_SERIALIZE( min);
                 CASUAL_SERIALIZE( max);
@@ -69,6 +67,7 @@ namespace casual::java::model {
         struct Service
         {
             std::string name;
+            char order;
             std::string category;
             std::string transactionType;
             long timeout;
@@ -84,6 +83,7 @@ namespace casual::java::model {
             CASUAL_CONST_CORRECT_SERIALIZE
             (
                CASUAL_SERIALIZE( name);
+               CASUAL_SERIALIZE( order);
                CASUAL_SERIALIZE( category);
                CASUAL_SERIALIZE( transactionType);
                CASUAL_SERIALIZE( timeout);

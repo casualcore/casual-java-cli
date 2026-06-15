@@ -80,7 +80,7 @@ namespace casual::java::service
                      common::terminal::format::column( "category", []( auto& service) { return service.category;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "mode", []( auto& service) { return service.transactionType;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "timeout", format_timeout, common::terminal::color::white, common::terminal::format::Align::right),
-                     common::terminal::format::column( "order", []( auto& service) { return service.statistics.order;}, common::terminal::color::white, common::terminal::format::Align::right),
+                     common::terminal::format::column( "order", []( auto& service) { return service.order;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "C", []( auto& service) { return service.statistics.count;}, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "AT", format_avg_time, common::terminal::color::white, common::terminal::format::Align::right),
                      common::terminal::format::column( "min", format_min_time, common::terminal::color::white, common::terminal::format::Align::right),

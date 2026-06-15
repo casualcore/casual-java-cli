@@ -23,6 +23,7 @@ public class Util
     public static Service toService( se.laz.casual.info.Service service, Optional<ServiceStatistics> serviceStatistics )
     {
         Service.Builder builder = new Service.Builder().name( service.getName() )
+                .order( service.getOrder().getValue() )
                 .category( service.getCategory() )
                 .transactionType( service.getTransactionType().name() )
                 .timeout( service.getTimeout() )
@@ -42,7 +43,7 @@ public class Util
 
     public static ServiceStatistics toServiceStatistics( EventServiceStatistics eventServiceStatistics )
     {
-        return new ServiceStatistics( eventServiceStatistics.getOrder(),
+        return new ServiceStatistics(
                 eventServiceStatistics.getCount(),
                 eventServiceStatistics.getMin(),
                 eventServiceStatistics.getMax(),

@@ -8,8 +8,9 @@ package se.laz.casual.java.cli;
 
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.ApplicationScoped;
-import se.laz.casual.info.CasualInfo;
+import se.laz.casual.info.CasualInfoStorage;
 import se.laz.casual.info.EventServiceStatistics;
+import se.laz.casual.info.ServiceDescriptor;
 import se.laz.casual.java.cli.model.Configuration;
 import se.laz.casual.java.cli.model.Queue;
 import se.laz.casual.java.cli.model.Service;
@@ -60,21 +61,18 @@ public class CLIService
 
     /**
      * Get all known services from Casual jca
+     *
      * @return - List of known service names
      */
     public List<Service> getServices()
     {
         LOG.log( Level.FINE, "called getServices()" );
         List<Service> services = new ArrayList<>();
-        CasualInfo.getInboundServices().forEach( cs -> {
-            Optional<EventServiceStatistics> statistics = CasualInfo.getInboundStatistic( cs.getName() );
+        CasualInfoStorage.getInstance().getServices().forEach( s -> {
+            Optional<EventServiceStatistics> statistics = CasualInfoStorage.getInstance()
+                    .getServiceStatistic( new ServiceDescriptor( s.getName(), s.getOrder() ) );
             Optional<ServiceStatistics> serviceStatistics = statistics.map( Util::toServiceStatistics );
-            services.add( Util.toService( cs, serviceStatistics ) );
-        } );
-        CasualInfo.getOutboundServices().forEach( cs -> {
-            Optional<EventServiceStatistics> statistics = CasualInfo.getOutboundStatistic( cs.getName() );
-            Optional<ServiceStatistics> serviceStatistics = statistics.map( Util::toServiceStatistics );
-            services.add( Util.toService( cs, serviceStatistics ) );
+            services.add( Util.toService( s, serviceStatistics ) );
         } );
         return services;
     }

@@ -11,6 +11,7 @@ import java.util.Objects;
 public class Service
 {
     String name;
+    char order;
     String category;
     String transactionType;
     long timeout;
@@ -33,6 +34,7 @@ public class Service
     public Service( Builder builder )
     {
         this.name = builder.name;
+        this.order = builder.order;
         this.category = builder.category;
         this.transactionType = builder.transactionType;
         this.timeout = builder.timeout;
@@ -54,6 +56,11 @@ public class Service
     public String getName()
     {
         return name;
+    }
+
+    public char getOrder()
+    {
+        return order;
     }
 
     public String getCategory()
@@ -124,27 +131,39 @@ public class Service
             return false;
         }
         Service service = (Service) o;
-        return timeout == service.timeout && hops == service.hops && valid == service.valid && Objects.equals( name,
-                service.name ) && Objects.equals( category, service.category ) && Objects.equals( transactionType,
-                service.transactionType ) && Objects.equals( statistics, service.statistics ) && Objects.equals( jndiName, service.jndiName ) && Objects.equals( domainId, service.domainId ) && Objects.equals( protocolVersion, service.protocolVersion ) && Objects.equals( hostName, service.hostName ) && Objects.equals( portNumber, service.portNumber );
+        return order == service.order && timeout == service.timeout && hops == service.hops && valid == service.valid && Objects.equals( name, service.name ) && Objects.equals( category, service.category ) && Objects.equals( transactionType, service.transactionType ) && Objects.equals( jndiName, service.jndiName ) && Objects.equals( domainId, service.domainId ) && Objects.equals( protocolVersion, service.protocolVersion ) && Objects.equals( hostName, service.hostName ) && Objects.equals( portNumber, service.portNumber ) && Objects.equals( statistics, service.statistics );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( name, category, transactionType, timeout, hops, valid, statistics, jndiName, domainId,
-                protocolVersion, hostName, portNumber );
+        return Objects.hash( name, order, category, transactionType, timeout, hops, valid, jndiName, domainId, protocolVersion, hostName, portNumber, statistics );
     }
 
     @Override
     public String toString()
     {
-        return "Service{" + "name='" + name + '\'' + ", category='" + category + '\'' + ", transactionType='" + transactionType + '\'' + ", timeout=" + timeout + ", hops=" + hops + ", valid=" + valid + ", statistics=" + statistics + ", jndiName=" + jndiName + ", domainId=" + domainId + ", protocolVersion=" + protocolVersion + ", hostName=" + hostName + ", portNumber=" + portNumber + '}';
+        return "Service{" +
+                "name='" + name + '\'' +
+                ", order=" + order +
+                ", category='" + category + '\'' +
+                ", transactionType='" + transactionType + '\'' +
+                ", timeout=" + timeout +
+                ", hops=" + hops +
+                ", valid=" + valid +
+                ", jndiName='" + jndiName + '\'' +
+                ", domainId='" + domainId + '\'' +
+                ", protocolVersion='" + protocolVersion + '\'' +
+                ", hostName='" + hostName + '\'' +
+                ", portNumber=" + portNumber +
+                ", statistics=" + statistics +
+                '}';
     }
 
     public static class Builder
     {
         String name;
+        char order;
         String category = "";
         String transactionType = "-";
         long timeout = 0;
@@ -155,11 +174,17 @@ public class Service
         String protocolVersion;
         String hostName;
         Integer portNumber;
-        ServiceStatistics statistics = new ServiceStatistics( '-', 0, 0, 0, 0, 0 );
+        ServiceStatistics statistics = new ServiceStatistics( 0, 0, 0, 0, 0 );
 
         public Builder name( String name )
         {
             this.name = name;
+            return this;
+        }
+
+        public Builder order( char order )
+        {
+            this.order = order;
             return this;
         }
 
