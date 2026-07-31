@@ -76,7 +76,8 @@ set_target_properties(casual-common PROPERTIES
   IMPORTED_LOCATION ${CASUAL_GIT_HOME_SO}/middleware/common/bin/libcasual-common.so
 )
 
-add_library(casual-cli STATIC IMPORTED)
+add_library(casual-cli STATIC IMPORTED
+  unittest/source/test_service.cpp)
 set_target_properties(casual-cli PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES ${CASUAL_GIT_HOME}/middleware/cli/include
   IMPORTED_LOCATION ${CASUAL_GIT_HOME_SO}/middleware/cli/bin/libcasual-cli.so
@@ -122,3 +123,36 @@ install(
   DESTINATION
   bin
 )
+
+add_library(casual-java-unittest SHARED)
+
+# Unittest
+target_sources(casual-java-unittest
+  PRIVATE
+  unittest/source/test_service.cpp
+)
+
+target_link_libraries(casual-java-unittest PRIVATE
+  casual-common
+  casual-unittest
+  gtest::gtest
+)
+
+add_executable(test-casual-java)
+
+target_sources(test-casual-java
+  PRIVATE
+  unittest/source/test_service.cpp
+)
+
+target_link_libraries(test-casual-java PRIVATE
+  casual-java-unittest
+  casual-common
+  casual-unittest
+  gtest::gtest
+  gtest_main
+)
+
+enable_testing()
+include(GoogleTest)
+gtest_discover_tests(test-casual-java "" AUTO)
