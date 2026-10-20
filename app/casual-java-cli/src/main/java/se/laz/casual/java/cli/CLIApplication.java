@@ -8,7 +8,7 @@ package se.laz.casual.java.cli;
 
 import jakarta.ws.rs.ApplicationPath;
 
-@ApplicationPath("/")
+@ApplicationPath( "/" )
 public class CLIApplication extends jakarta.ws.rs.core.Application
 {
 }

@@ -60,34 +60,35 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CASUAL_GIT_HOME ${CMAKE_CURRENT_SOURCE_DIR}/../../casual)
 
-# TODO: How should CMAKE_CURRENT_SOURCE_DIR be set?
 message(CHECK_START "Checking for CLion or conan built Casual")
-if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../casual/cmake-build-debug)
-  set(CASUAL_GIT_HOME_SO ${CMAKE_CURRENT_SOURCE_DIR}/../../casual/cmake-build-debug)
+if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake-build-debug)
+  set(CASUAL_GIT_HOME_SO ${CASUAL_GIT_HOME}/cmake-build-debug)
   message( CHECK_PASS "CMAKE_CURRENT_SOURCE_DIR set to ${CASUAL_GIT_HOME_SO} (CLion)" )
 else ()
-  set(CASUAL_GIT_HOME_SO ${CMAKE_CURRENT_SOURCE_DIR}/../../casual/build/Release)
+  set(CASUAL_GIT_HOME_SO ${CASUAL_GIT_HOME}/build/Release)
   message( CHECK_PASS "CMAKE_CURRENT_SOURCE_DIR set to ${CASUAL_GIT_HOME_SO} (Conan)" )
 endif()
 
-add_library(casual-common STATIC IMPORTED)
+# Libraries from casual
+add_library(casual-common SHARED IMPORTED)
 set_target_properties(casual-common PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES ${CASUAL_GIT_HOME}/middleware/common/include
   IMPORTED_LOCATION ${CASUAL_GIT_HOME_SO}/middleware/common/bin/libcasual-common.so
 )
 
-add_library(casual-cli STATIC IMPORTED)
+add_library(casual-cli SHARED IMPORTED)
 set_target_properties(casual-cli PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES ${CASUAL_GIT_HOME}/middleware/cli/include
   IMPORTED_LOCATION ${CASUAL_GIT_HOME_SO}/middleware/cli/bin/libcasual-cli.so
 )
 
-add_library(casual-xatmi STATIC IMPORTED)
+add_library(casual-xatmi SHARED IMPORTED)
 set_target_properties(casual-xatmi PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES ${CASUAL_GIT_HOME}/middleware/xatmi/include
   IMPORTED_LOCATION ${CASUAL_GIT_HOME_SO}/middleware/xatmi/bin/libcasual-xatmi.so
 )
 
+# Casual Java CLI
 add_executable(casual-java)
 
 target_include_directories(casual-java PRIVATE
@@ -121,4 +122,50 @@ install(
   casual-java
   DESTINATION
   bin
+)
+
+# ---- Test -----
+# Wiremock
+file(
+  DOWNLOAD https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.13.2/wiremock-standalone-3.13.2.jar
+  ../unittest/wiremock-standalone.jar
+)
+
+add_library(casual-administration-unittest SHARED IMPORTED)
+set_target_properties(casual-administration-unittest PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES ${CASUAL_GIT_HOME}/middleware/administration/unittest/include
+  IMPORTED_LOCATION ${CASUAL_GIT_HOME_SO}/middleware/administration/bin/libcasual-administration-unittest.so
+)
+
+# Unittest
+add_executable(casual-java-cli-unittest)
+target_include_directories(casual-java-cli-unittest PRIVATE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/unittest/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/unittest/util/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+
+target_sources(casual-java-cli-unittest
+  PRIVATE
+        unittest/source/test_service.cpp
+)
+
+target_link_libraries(casual-java-cli-unittest PRIVATE
+  casual-common
+  casual-xatmi
+  casual-administration-unittest
+  curl
+  gtest::gtest
+  gtest_main
+)
+
+set(test_environment
+  WIREMOCK_PORT "${WIREMOCK_PORT}" 8080
+)
+
+enable_testing()
+include(GoogleTest)
+gtest_discover_tests(casual-java-cli-unittest "" AUTO
+  PROPERTIES
+  ENVIRONMENT ${test_environment}
 )

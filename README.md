@@ -46,11 +46,6 @@ $ cmake --build . --preset conan-release # Build
 ### Build cli with CLion
 To import the project in CLion, the conan plugin must first be installed. 
 
-Then make sure that CLion has the `LD_LIBRARY_PATH` to the locally built Casual binaries, for example:
-```bash 
-$ export LD_LIBRARY_PATH=$HOME/git/casual/cmake-build-debug/middleware/common/bin
-```
-
 All environment variables from [casual.env](./cli/example/casual.env) must be set.
 
 ### Build casual-java-cli-app
@@ -59,6 +54,10 @@ Run Gradle, requires JDK version 17.
 $ cd $HOME/git/casual-java-cli/app
 $ ./gradlew build
 ```
+
+### Unittests cli
+Cmake will automatically download a standalone Wiremock that will be used when running unittests for the cli. Use [run-tests.sh](./cli/run-tests.sh) to start and run all unittests for the cli.
+
 
 ## Usage
 The Casual java CLI must connect to a running Wildfly domain, which has casual-java-cli-app.war installed. Either by specifing an environment variabel, for example: `CASUAL_JAVA_HOST=http://localhost:8080` or using the `--host` option in the CLI.

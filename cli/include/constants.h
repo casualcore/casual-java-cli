@@ -18,10 +18,10 @@ namespace casual::java::cli::constants
         putenv(::strdup((key + "=" + value).c_str()));
     }
 
-    inline std::string get_env(const std::string& key)
+    inline std::string get_env(const std::string& key, const std::string& default_value)
     {
         const char* value = getenv(key.c_str());
-        return value ? std::string( value ) : std::string();
+        return value ? std::string( value ) : default_value;
     }
 
     inline bool has_env(const std::string& key)

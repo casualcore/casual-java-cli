@@ -6,11 +6,6 @@
 
 package se.laz.casual.java.cli.model;
 
-import java.util.Objects;
-
-public record Connection(String jndiName, boolean valid) {
-    public Connection
-    {
-        Objects.requireNonNull(jndiName, "jndiName can not be null");
-    }
+public record ServiceStatistics(long count, long min, long max, long last, long total)
+{
 }

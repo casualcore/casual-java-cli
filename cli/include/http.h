@@ -27,7 +27,9 @@ namespace casual::java::cli::http
 
     enum Method {
         GET,
-        POST
+        POST,
+        PUT,
+        DELETE
       };
 
     struct Request
